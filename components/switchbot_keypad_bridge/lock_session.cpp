@@ -143,8 +143,6 @@ LockSession::Action LockSession::process_frame(const std::string &frame) {
     return Action::NONE;  // error already logged
   }
 
-  ESP_LOGD(TAG, "RX %s", format_hex_pretty(plaintext, ct_len).c_str());
-
   this->command_ = decode_lock_command(plaintext, ct_len);
 
   // Fast Unlock on Vision periodically rotates the IV while an action can
@@ -306,8 +304,7 @@ void LockSession::ensure_pending_iv_() {
   if (this->pending_.valid) {
     std::memcpy(this->iv_response_.data() + IV_RESPONSE_HEADER,
                 this->pending_.iv.data(), AES_IV_SIZE);
-    ESP_LOGV(TAG, "Reusing pending IV: %s",
-             format_hex_pretty(this->pending_.iv.data(), AES_IV_SIZE).c_str());
+
     return;
   }
 
@@ -348,8 +345,7 @@ void LockSession::ensure_pending_iv_() {
   this->pending_.valid = true;
   std::memcpy(this->iv_response_.data() + IV_RESPONSE_HEADER,
               this->pending_.iv.data(), AES_IV_SIZE);
-  ESP_LOGV(TAG, "Pending IV: %s",
-           format_hex_pretty(this->pending_.iv.data(), AES_IV_SIZE).c_str());
+
 }
 
 bool LockSession::is_replayed_action_(const CryptoContext &context,
