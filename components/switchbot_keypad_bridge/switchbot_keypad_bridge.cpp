@@ -739,21 +739,19 @@ bool SwitchbotKeypadBridge::relay_to_lock_async_(const FrameHeader &header,
 
 void SwitchbotKeypadBridge::send_ack_(const FrameHeader &header) {
   const uint8_t ack[LockSession::HEADER_LEN] = {0x01, header.key_id, header.seq_a, header.seq_b};
-  ESP_LOGV(TAG, "TX keypad ack %s",
-           format_hex_pretty(ack, sizeof(ack)).c_str());
+
   this->notify_(ack, sizeof(ack));
 }
 
 void SwitchbotKeypadBridge::send_encrypted_response_(const FrameHeader &header,
                                                     const uint8_t *plaintext, size_t length) {
-  ESP_LOGV(TAG, "TX keypad plaintext %s",
-           format_hex_pretty(plaintext, length).c_str());
+
   uint8_t packet[LockSession::MAX_PACKET];
   const size_t n = this->session_.encrypt_response(header, plaintext, length, packet);
   if (n == 0) {
     return;  // error already logged
   }
-  ESP_LOGV(TAG, "TX keypad %s", format_hex_pretty(packet, n).c_str());
+
   this->notify_(packet, n);
 }
 
