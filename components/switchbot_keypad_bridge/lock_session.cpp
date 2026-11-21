@@ -54,9 +54,6 @@ LockSession::Action LockSession::process_frame(const std::string &frame) {
   // frame. The bridge may relay plaintext asynchronously after COMMAND.
   this->clear_transient_();
 
-  ESP_LOGV(TAG, "RX WIRE %zu bytes: %s", frame.size(),
-           format_hex_pretty(reinterpret_cast<const uint8_t *>(frame.data()), frame.size()).c_str());
-
   if (this->is_iv_request_(frame)) {
     // The IV request advertises which key_id the keypad will use for the
     // rest of the session (`57 00 00 00 0F 21 03 <key_id>`). Adapt to it —
